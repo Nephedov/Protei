@@ -52,6 +52,8 @@ allure serve build/allure-results
     <li><a href="./Report.md">Отчет</a> о результатах автотестирования.</li>
 </ul>
 
+<h4>Фактическое время выполнения: 36 часов.</h4>
+
 <h2>Объект тестирования</h2>
 Документ <a href="./qa-test.html">qa-test.html</a>.
 
