@@ -13,31 +13,38 @@
         <li>GIT 2.37.2</li>
     </ul>
 </details>
-<div>Шаги воспроизведения:
-    <ol>
-        <li>Склонировать репозиторий <a href="https://github.com/Nephedov/Protei">https://github.com/Nephedov/Protei</a>.</li>
-        <li></li>
-        <li>Открыть терминал в <a href="./">корневом репозитории</a> проекта. (на одном уровне с <a href="./build.gradle">build.gradle</a>).</li>
-        <li>Запустить тесты, выполнив команду в терминале:
-            <ul>
-                <li>gradlew clean test</br> - из cmd.</li>
-                <li>./gradlew clean test</br> - из терминала IntelliJ IDEA.</li>
-            </ul>
-        <li>Запустить формирование allure отчетов, выполнив команду в терминале:
-            <ul>
-                <li>allure serve build/allure-results</li>
-            <ul>
-        </li>
-    </ol>
-</div>
 
+Шаги воспроизведения:
+1. Склонировать репозиторий <a href="https://github.com/Nephedov/Protei">https://github.com/Nephedov/Protei</a>.
+2. Заменить значение переменной <a href="https://github.com/Nephedov/Protei/blob/044b00d6644fb9e13b195d0ec722160d507af8c1/src/test/java/actions/DriverConfig.java#L13">pathToFile</a>, класса <a href="./src/test/java/actions/DriverConfig.java">DriverConfig.java</a>, на свой абсолютный путь к файлу <a href="./qa-test.html">qa-test.html</a>.
+```java
+from this
+    public String pathToFile = "file:///C:/Users/Home/ProteiTmp/qa-test.html";
+```
+```java
+to this
+    public String pathToFile = "file:///yourAbsolutePathTo/qa-test.html";
+```
+3. Открыть терминал в <a href="./">корневом репозитории</a> проекта. (на одном уровне с <a href="./build.gradle">build.gradle</a>).
+4. Запустить тесты, выполнив команду в терминале cmd:
+```
+gradlew clean test
+```
+или в терминале IntelliJ IDEA:
+```
+./gradlew clean test
+```
+5. Запустить формирование allure отчетов, после прогона тестов, выполнив команду в терминале:
+```
+allure serve build/allure-results
+```
 
 <h2>Решения</h2>
 
 <ul>
     <li><a href="./Plan.md">План тестирования</a>.</li>
     <li><a href="https://docs.google.com/spreadsheets/d/1q8xd6sDxd11XxgBhMsG4IvHMhhLvpTTBOh8AXMCUXPk/edit?gid=0#gid=0">Чек-лист</a>.</li>
-    <li><a href="">Баг-репорт</a>.</li>
+    <li><a href="https://github.com/Nephedov/Protei/issues/1">Баг-репорт</a>.</li>
     <li><a href="./build.gradle">build.gradle</a> проекта.</li>
     <li><a href="./src/test/java/tests/AuthPageTest.java">AuthPageTest.java</a> автотесты формы авторизации.</li>
     <li><a href="./src/test/java/tests/InputsPageTest.java">InputsPageTest.java</a> автотесты формы анкеты.</li>
@@ -53,7 +60,7 @@
 <ul>
     <li>Составлен <a href="./Plan.md">план тестирования</a>.</li>
     <li>Составлен и реализован <a href="https://docs.google.com/spreadsheets/d/1q8xd6sDxd11XxgBhMsG4IvHMhhLvpTTBOh8AXMCUXPk/edit?gid=0#gid=0">чек-лист</a>.</li>
-    <li>Заведен <a href="">баг-репорт</a>.</li>
+    <li>Заведен <a href="https://github.com/Nephedov/Protei/issues/1">баг-репорт</a>.</li>
     <li>Настроен <a href="./build.gradle">build.gradle</a> проекта.</li>
     <li>
         <details><summary>Создан репозиторий <a href="./src/test/java/pages/">pages</a> в котором реализованы классы:</summary>
