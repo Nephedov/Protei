@@ -42,7 +42,7 @@
             </details>
         </li>
         <li>Составление и реализация <a href="https://docs.google.com/spreadsheets/d/1q8xd6sDxd11XxgBhMsG4IvHMhhLvpTTBOh8AXMCUXPk/edit?usp=drive_link">чек-листа</a>.</li>
-        <li>Заведение <a href="">баг-репорта</a>.</li>
+        <li>Заведение <a href="https://github.com/Nephedov/Protei/issues/1">баг-репорта</a>.</li>
         <li>
             <details><summary>Настройка окружения для автоматизации.</summary>
                 <ul>

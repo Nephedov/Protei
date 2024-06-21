@@ -48,9 +48,9 @@ public class DataGenerator {
     }
 
     public static class RandomString {
-        static final String ru = "0123456789АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
-        static final String en = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        static SecureRandom rnd = new SecureRandom();
+        private static final String ru = "0123456789АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+        private static final String en = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        private static SecureRandom rnd = new SecureRandom();
 
         public static String randomString(int len, String lang) {
             if(lang.equals("ru")) {

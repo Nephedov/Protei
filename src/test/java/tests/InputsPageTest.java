@@ -7,22 +7,27 @@ import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import pages.AuthPage;
 import pages.InputsPage;
 
+import java.time.Duration;
+
 import static org.testng.Assert.*;
 
 public class InputsPageTest {
     public WebDriver driver;
+    public WebDriverWait wait;
 
     @BeforeMethod(description = "Open html with authorization")
     public void setup() {
         driver = new DriverConfig().setUpDriverChrome();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(3));
         new AuthPage(driver).validAuthorization();
     }
 
@@ -37,7 +42,7 @@ public class InputsPageTest {
     @Story("Valid inputs")
     @Test(description = "Valid inputs with one selected checkbox and first radiobutton")
     @Description("Should check that valid data with one selected checkbox and first radiobutton added to table")
-    public void shouldCheckThatDataWithOneCheckboxAddedToTable() throws InterruptedException {
+    public void shouldCheckThatDataWithOneCheckboxAddedToTable() {
         InputsPage inputsPage = new InputsPage(driver);
         DataGenerator.generateEmail();
         String email = DataGenerator.generateEmail();
@@ -50,7 +55,8 @@ public class InputsPageTest {
         inputsPage.clickOnCheckbox1();
         inputsPage.clickOnRadiobutton1();
         inputsPage.clickOnSubmitButton();
-        Thread.sleep(2000L);
+
+        wait.until(ExpectedConditions.visibilityOf(inputsPage.closeModalContentButton));
         inputsPage.clickOnCloseModalContentButton();
 
         assertEquals(inputsPage.getLastAddedValue("Email"), email);
@@ -65,7 +71,7 @@ public class InputsPageTest {
     @Story("Valid inputs")
     @Test(description = "Valid inputs with two selected checkboxes and second radiobutton")
     @Description("Should check that valid data with two selected checkboxes and second radiobutton added to table")
-    public void shouldCheckThatDataWithTwoCheckboxesAddedToTable() throws InterruptedException {
+    public void shouldCheckThatDataWithTwoCheckboxesAddedToTable() {
         InputsPage inputsPage = new InputsPage(driver);
         DataGenerator.generateEmail();
         String email = DataGenerator.generateEmail();
@@ -79,7 +85,8 @@ public class InputsPageTest {
         inputsPage.clickOnCheckbox2();
         inputsPage.clickOnRadiobutton2();
         inputsPage.clickOnSubmitButton();
-        Thread.sleep(2000L);
+
+        wait.until(ExpectedConditions.visibilityOf(inputsPage.closeModalContentButton));
         inputsPage.clickOnCloseModalContentButton();
 
         assertEquals(inputsPage.getLastAddedValue("Email"), email);
@@ -94,7 +101,7 @@ public class InputsPageTest {
     @Story("Valid inputs")
     @Test(description = "Valid inputs without selected checkboxes with selected third radiobutton")
     @Description("Should check that valid data added to table without selected checkboxes with selected third radiobutton")
-    public void shouldCheckThatDataWithoutCheckboxesAddedToTable() throws InterruptedException {
+    public void shouldCheckThatDataWithoutCheckboxesAddedToTable() {
         InputsPage inputsPage = new InputsPage(driver);
         DataGenerator.generateEmail();
         String email = DataGenerator.generateEmail();
@@ -106,7 +113,8 @@ public class InputsPageTest {
         inputsPage.fillTheFields(email, name, gender);
         inputsPage.clickOnRadiobutton3();
         inputsPage.clickOnSubmitButton();
-        Thread.sleep(2000L);
+
+        wait.until(ExpectedConditions.visibilityOf(inputsPage.closeModalContentButton));
         inputsPage.clickOnCloseModalContentButton();
 
         assertEquals(inputsPage.getLastAddedValue("Email"), email);
@@ -121,7 +129,7 @@ public class InputsPageTest {
     @Story("Valid inputs")
     @Test(description = "Valid inputs without selected radiobutton and checkboxes")
     @Description("Should check that valid data added to table without selected radiobutton and checkboxes")
-    public void shouldCheckThatDataWithoutRadiobuttonAddedToTable() throws InterruptedException {
+    public void shouldCheckThatDataWithoutRadiobuttonAddedToTable() {
         InputsPage inputsPage = new InputsPage(driver);
         DataGenerator.generateEmail();
         String email = DataGenerator.generateEmail();
@@ -132,7 +140,8 @@ public class InputsPageTest {
 
         inputsPage.fillTheFields(email, name, gender);
         inputsPage.clickOnSubmitButton();
-        Thread.sleep(2000L);
+
+        wait.until(ExpectedConditions.visibilityOf(inputsPage.closeModalContentButton));
         inputsPage.clickOnCloseModalContentButton();
 
         assertEquals(inputsPage.getLastAddedValue("Email"), email);
@@ -217,18 +226,17 @@ public class InputsPageTest {
     @Story("Email field")
     @Test(description = "Check email field changes color on click")
     @Description("Should check that email field changes color on click")
-    public void shouldCheckEmailFieldChangesColorOnClick() throws InterruptedException {
+    public void shouldCheckEmailFieldChangesColorOnClick() {
         InputsPage inputsPage = new InputsPage(driver);
-        String backgroundBeforeClick = "rgb(255, 255, 255)";
-        String backgroundAfterClick = "rgb(245, 251, 254)";
+        String backgroundExpectedBeforeClick = "rgb(255, 255, 255)";
+        String backgroundExpectedAfterClick = "rgb(245, 251, 254)";
 
-        assertTrue(inputsPage.emailField.getCssValue("background").contains(backgroundBeforeClick));
+        assertTrue(inputsPage.emailField.getCssValue("background").contains(backgroundExpectedBeforeClick));
+
         CustomActions.clickOnElement(driver, inputsPage.emailField);
-        // wait should be added here
-        Thread.sleep(2000L);
-        assertTrue(inputsPage.emailField.getCssValue("background").contains(backgroundAfterClick));
+        assertTrue(wait.until(ExpectedConditions.attributeContains(
+                inputsPage.emailField, "background", backgroundExpectedAfterClick)));
     }
-
     @Epic("UI testing")
     @Feature("Inputs Page")
     @Story("Name field")
@@ -247,16 +255,16 @@ public class InputsPageTest {
     @Story("Name field")
     @Test(description = "Check name field changes color on click")
     @Description("Should check that name field changes color on click")
-    public void shouldCheckNameFieldChangesColorOnClick() throws InterruptedException {
+    public void shouldCheckNameFieldChangesColorOnClick() {
         InputsPage inputsPage = new InputsPage(driver);
-        String backgroundBeforeClick = "rgb(255, 255, 255)";
-        String backgroundAfterClick = "rgb(245, 251, 254)";
+        String backgroundExpectedBeforeClick = "rgb(255, 255, 255)";
+        String backgroundExpectedAfterClick = "rgb(245, 251, 254)";
 
-        assertTrue(inputsPage.nameField.getCssValue("background").contains(backgroundBeforeClick));
+        assertTrue(inputsPage.nameField.getCssValue("background").contains(backgroundExpectedBeforeClick));
+
         CustomActions.clickOnElement(driver, inputsPage.nameField);
-        // wait should be added here
-        Thread.sleep(2000L);
-        assertTrue(inputsPage.nameField.getCssValue("background").contains(backgroundAfterClick));
+        assertTrue(wait.until(ExpectedConditions.attributeContains(
+                inputsPage.nameField, "background", backgroundExpectedAfterClick)));
     }
 
     @Epic("UI testing")
@@ -315,15 +323,14 @@ public class InputsPageTest {
     @Story("Alert message")
     @Test(description = "Check that alert message is not displayed after closing")
     @Description("Should check that alert message is not displayed after closing")
-    public void shouldCheckAlertMessageIsNotDisplayedAfterClosing() throws InterruptedException {
+    public void shouldCheckAlertMessageIsNotDisplayedAfterClosing() {
         InputsPage inputsPage = new InputsPage(driver);
 
         inputsPage.clickOnSubmitButton();
-        assertTrue(inputsPage.alertMessage.isDisplayed());
+        wait.until(ExpectedConditions.visibilityOf(inputsPage.alertMessage));
         inputsPage.clickOnCloseAlertMessageButton();
 
-        Thread.sleep(2000L);
-        assertFalse(CustomActions.isExist(driver, By.cssSelector("#authAlertsHolder>div")));
+        assertTrue(wait.until(ExpectedConditions.invisibilityOf(inputsPage.alertMessage)));
     }
 
     @Epic("UI testing")
@@ -333,12 +340,15 @@ public class InputsPageTest {
     @Description("Should check that submit button changes background color on hover")
     public void shouldCheckThatSubmitButtonChangesBackgroundColor() {
         InputsPage inputsPage = new InputsPage(driver);
-        String backgroundColorBeforeHover = "rgba(0, 168, 230, 1)";
-        String backgroundColorOnHover = "rgba(53, 179, 238, 1)";
+        String backgroundExpectedColorBeforeHover = "rgba(0, 168, 230, 1)";
+        String backgroundExpectedColorOnHover = "rgba(53, 179, 238, 1)";
 
-        assertEquals(inputsPage.submitButton.getCssValue("background-color"), backgroundColorBeforeHover);
+        assertEquals(inputsPage.submitButton.getCssValue("background-color"), backgroundExpectedColorBeforeHover);
+
         CustomActions.hoverOnElement(driver, inputsPage.submitButton);
-        assertEquals(inputsPage.submitButton.getCssValue("background-color"), backgroundColorOnHover);
+
+        assertTrue(wait.until(ExpectedConditions.attributeContains(
+                inputsPage.submitButton, "background-color", backgroundExpectedColorOnHover)));
     }
 
     @Epic("UI testing")
@@ -372,7 +382,7 @@ public class InputsPageTest {
     @Story("Modal dialog")
     @Test(description = "Check the modal is displayed")
     @Description("Should check the display of the modal")
-    public void shouldCheckTheDisplayOfTheModal() throws InterruptedException {
+    public void shouldCheckTheDisplayOfTheModal() {
         InputsPage inputsPage = new InputsPage(driver);
         DataGenerator.generateEmail();
         String email = DataGenerator.generateEmail();
@@ -384,9 +394,9 @@ public class InputsPageTest {
 
         inputsPage.fillTheFields(email, name, gender);
         inputsPage.clickOnSubmitButton();
-        Thread.sleep(1000L);
 
-        assertTrue(inputsPage.modalContent.isDisplayed());
+        wait.until(ExpectedConditions.visibilityOf(inputsPage.modalContent));
+
         assertTrue(inputsPage.modalContent.getText().contains(expectedContent));
         assertTrue(inputsPage.closeModalContentButton.isDisplayed());
         assertTrue(inputsPage.closeModalContentButton.getText().contains(expectedClose));
@@ -397,7 +407,7 @@ public class InputsPageTest {
     @Story("Modal dialog")
     @Test(description = "Check that modal dialog is not displayed after confirm")
     @Description("Should check that modal dialog is not displayed after confirm")
-    public void shouldCheckModalDialogIsNotDisplayedAfterConfirm() throws InterruptedException {
+    public void shouldCheckModalDialogIsNotDisplayedAfterConfirm() {
         InputsPage inputsPage = new InputsPage(driver);
         DataGenerator.generateEmail();
         String email = DataGenerator.generateEmail();
@@ -406,11 +416,11 @@ public class InputsPageTest {
 
         inputsPage.fillTheFields(email, name, gender);
         inputsPage.clickOnSubmitButton();
-        Thread.sleep(1000L);
-        assertTrue(inputsPage.modalContent.isDisplayed());
+
+        wait.until(ExpectedConditions.elementToBeClickable(inputsPage.closeModalContentButton));
         inputsPage.clickOnCloseModalContentButton();
 
-        assertFalse(CustomActions.isExist(driver, By.cssSelector("#authAlertsHolder>div")));
+        assertTrue(wait.until(ExpectedConditions.invisibilityOf(inputsPage.modalContent)));
     }
 
     @Epic("UI testing")
@@ -685,8 +695,7 @@ public class InputsPageTest {
     @Story("Injections Name field")
     @Test(description = "Show entered values sql injecting name field")
     @Description("Should check show entered values when insert sql injection in name field")
-    public void shouldCheckThatTheEnteredValuesAreDisplayedWhenInsertSqlInjectionInNameField()
-            throws InterruptedException {
+    public void shouldCheckThatTheEnteredValuesAreDisplayedWhenInsertSqlInjectionInNameField() {
         InputsPage inputsPage = new InputsPage(driver);
         String sqlInjection = " 1' OR '1'='1";
         String email = DataGenerator.generateEmail();
@@ -694,7 +703,8 @@ public class InputsPageTest {
 
         inputsPage.fillTheFields(email, sqlInjection, gender);
         inputsPage.clickOnSubmitButton();
-        Thread.sleep(1000L);
+
+        wait.until(ExpectedConditions.elementToBeClickable(inputsPage.closeModalContentButton));
         inputsPage.clickOnCloseModalContentButton();
 
         assertEquals(inputsPage.getLastAddedValue("Name"), sqlInjection.trim());
@@ -705,8 +715,7 @@ public class InputsPageTest {
     @Story("Injections Name field")
     @Test(expectedExceptions = AssertionError.class, description = "Show entered values xss injecting name field")
     @Description("Should check show entered values when insert xss injection in name field")
-    public void shouldCheckThatTheEnteredValuesAreDisplayedWhenInsertXssInjectionInNameField()
-            throws InterruptedException {
+    public void shouldCheckThatTheEnteredValuesAreDisplayedWhenInsertXssInjectionInNameField() {
         InputsPage inputsPage = new InputsPage(driver);
         String xssInjection = "<iframe src=\"javascript:…\">";
         String email = DataGenerator.generateEmail();
@@ -714,7 +723,8 @@ public class InputsPageTest {
 
         inputsPage.fillTheFields(email, xssInjection, gender);
         inputsPage.clickOnSubmitButton();
-        Thread.sleep(1000L);
+
+        wait.until(ExpectedConditions.elementToBeClickable(inputsPage.closeModalContentButton));
         inputsPage.clickOnCloseModalContentButton();
 
         assertEquals(inputsPage.getLastAddedValue("Name"), xssInjection.trim());

@@ -7,21 +7,29 @@ import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import pages.AuthPage;
 
+import java.time.Duration;
+
 import static org.testng.Assert.*;
 
 public class AuthPageTest {
+
     public WebDriver driver;
+    public WebDriverWait wait;
 
     @BeforeMethod(description = "Open html")
     public void setup() {
         driver = new DriverConfig().setUpDriverChrome();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(3)); // Wait up to 3 seconds
+
+
     }
 
     @AfterMethod(description = "Close html")
@@ -50,14 +58,14 @@ public class AuthPageTest {
     @Description("Should check that email field changes color on click")
     public void shouldCheckEmailFieldChangesColorOnClick() throws InterruptedException {
         AuthPage loginPage = new AuthPage(driver);
-        String backgroundBeforeClick = "rgb(255, 255, 255)";
-        String backgroundAfterClick = "rgb(245, 251, 254)";
+        String backgroundExpectedBeforeClick = "rgb(255, 255, 255)";
+        String backgroundExpectedAfterClick = "rgb(245, 251, 254)";
 
-        assertTrue(loginPage.emailField.getCssValue("background").contains(backgroundBeforeClick));
+        assertTrue(loginPage.emailField.getCssValue("background").contains(backgroundExpectedBeforeClick));
+
         CustomActions.clickOnElement(driver, loginPage.emailField);
-        // wait should be added here
-        Thread.sleep(2000L);
-        assertTrue(loginPage.emailField.getCssValue("background").contains(backgroundAfterClick));
+        assertTrue(wait.until(ExpectedConditions.attributeContains
+                (loginPage.emailField, "background", backgroundExpectedAfterClick)));
     }
 
     @Epic("UI testing")
@@ -90,16 +98,17 @@ public class AuthPageTest {
     @Story("Password field")
     @Test(description = "Check password field changes color on click")
     @Description("Should check that password field changes color on click")
-    public void shouldCheckPasswordFieldChangesColorOnClick() throws InterruptedException {
+    public void shouldCheckPasswordFieldChangesColorOnClick() {
         AuthPage loginPage = new AuthPage(driver);
-        String backgroundBeforeClick = "rgb(255, 255, 255)";
-        String backgroundAfterClick = "rgb(245, 251, 254)";
+        String backgroundExpectedBeforeClick = "rgb(255, 255, 255)";
+        String backgroundExpectedAfterClick = "rgb(245, 251, 254)";
 
-        assertTrue(loginPage.passwordField.getCssValue("background").contains(backgroundBeforeClick));
+        assertTrue(loginPage.passwordField.getCssValue("background").contains(backgroundExpectedBeforeClick));
+
         CustomActions.clickOnElement(driver, loginPage.passwordField);
-        // wait should be added here
-        Thread.sleep(2000L);
-        assertTrue(loginPage.passwordField.getCssValue("background").contains(backgroundAfterClick));
+
+        assertTrue(wait.until(ExpectedConditions.attributeContains
+                (loginPage.passwordField, "background", backgroundExpectedAfterClick)));
     }
 
     @Epic("UI testing")
@@ -109,12 +118,15 @@ public class AuthPageTest {
     @Description("Should check that submit button changes background color on hover")
     public void shouldCheckThatSubmitButtonChangesBackgroundColor() {
         AuthPage loginPage = new AuthPage(driver);
-        String backgroundColorBeforeHover = "rgba(0, 168, 230, 1)";
-        String backgroundColorOnHover = "rgba(53, 179, 238, 1)";
+        String backgroundExpectedColorBeforeHover = "rgba(0, 168, 230, 1)";
+        String backgroundExpectedColorOnHover = "rgba(53, 179, 238, 1)";
 
-        assertEquals(loginPage.submitButton.getCssValue("background-color"), backgroundColorBeforeHover);
+        assertEquals(loginPage.submitButton.getCssValue("background-color"), backgroundExpectedColorBeforeHover);
+
         CustomActions.hoverOnElement(driver, loginPage.submitButton);
-        assertEquals(loginPage.submitButton.getCssValue("background-color"), backgroundColorOnHover);
+
+        assertTrue(wait.until(ExpectedConditions.attributeContains
+                (loginPage.submitButton, "background-color", backgroundExpectedColorOnHover)));
     }
 
     @Epic("UI testing")
@@ -274,15 +286,15 @@ public class AuthPageTest {
     @Story("Alert message")
     @Test(description = "Check that alert message is not displayed after closing")
     @Description("Should check that alert message is not displayed after closing")
-    public void shouldCheckAlertMessageIsNotDisplayedAfterClosing() throws InterruptedException {
+    public void shouldCheckAlertMessageIsNotDisplayedAfterClosing() {
         AuthPage loginPage = new AuthPage(driver);
 
         loginPage.clickOnSubmitButton();
-        assertTrue(loginPage.alertMessage.isDisplayed());
+
+        wait.until(ExpectedConditions.elementToBeClickable(loginPage.closeAlertMessageButton));
         loginPage.clickOnCloseAlertMessageButton();
 
-        Thread.sleep(2000L);
-        assertFalse(CustomActions.isExist(driver, By.cssSelector("#authAlertsHolder>div")));
+        assertTrue(wait.until(ExpectedConditions.invisibilityOf(loginPage.alertMessage)));
     }
     @Epic("Security testing")
     @Feature("Authorization Page")
